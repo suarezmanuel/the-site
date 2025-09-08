@@ -1,0 +1,29 @@
+<%- include('partials/header', {title: 'Blog Index'}) %>
+
+<h1> Blog Index </h1>
+<p> heres a list of all blogs </p>
+
+<nav> 
+<% tags.forEach(tag => { %>
+    <a href="<%= `/index/tag/${tag}` %>" class="link"><%= tag %></a> 
+<% }) %>
+</nav>
+
+<div>
+    <% if (blogs.length > 0) { %>
+        <ul>
+            <% blogs.forEach(blog => { %>
+                <li>
+                    <a href="<%= blog.url %>" class="link">
+                        <strong><%= blog.title %></strong>
+                    </a>
+                    <p><%= blog.description %></p>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p> No blogs found </p>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>
