@@ -7,8 +7,20 @@
 <title><%= title %></title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"/>
+<!-- <link rel="stylesheet" href="https://unpkg.com/dracula-prism/dist/css/dracula-prism.css"> -->
 
 <style>
+
+
+    /* Custom Prism.js Overrides --->  */
+
+    .token.punctuation { /* for (), [], {}, :, etc. */
+        color: #f7ffa5be; /* A bright, readable yellow */
+    }
+
+    /* <--- */
+    
     .link {
         padding-left: 0.5%;
         padding-right: 0.5%;
@@ -16,6 +28,55 @@
         color: blue;
         border: 1px solid grey;
     }
+
+    body {
+        font-size: 18px;
+        line-height: 1.6;
+        background-color: #fdfdfd;
+        color: #333;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+
+    .lesson-content {
+        max-width: 65ch;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .lesson-content h1,
+    .lesson-content h2,
+    .lesson-content h3 {
+        line-height: 1.2; /* Tighter line-height for headings */
+        margin-top: 2em; /* More space above headings */
+        margin-bottom: 0.8em; /* Less space below headings */
+        color: #111; /* Make headings darker for more contrast */
+    }
+
+    .lesson-content h1 {
+        font-size: 2.5rem; /* rem is relative to the root font size */
+    }
+
+    .lesson-content h2 {
+        font-size: 2rem;
+    }
+
+    /* --- 4. Paragraph Spacing --- */
+    .lesson-content p {
+        margin-bottom: 1.2em; /* Space between paragraphs */
+    }
+
+    .lesson-content blockquote {
+        margin-left: 0;
+        padding-left: 20px;
+        border-left: 4px solid #ccc;
+        color: #555;
+        font-style: italic;
+    }
+
+    .lesson-content pre {
+        margin-bottom: 1.5em;
+    }
+
 </style>
 </head>
 

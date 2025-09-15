@@ -6,12 +6,20 @@ const markedKatex = require('marked-katex-extension')
 const matter = require('gray-matter')
 
 const app = express();
-const PORT = 3001;
+const PORT = 8080;
 const mdArray = []
+
+app.use(express.static(path.join(__dirname, 'content')))
 
 marked.use(markedKatex({
     throwOnError: false
 }))
+
+marked.setOptions({
+    // breaks: true, // This is the magic option
+    gfm: true,    // Use GitHub Flavored Markdown
+    pedantic: false // Don't be strict about minor markdown errors
+});
 
 // get array of file tags with path
 const contentDir = path.join(__dirname, 'content');
@@ -41,7 +49,6 @@ topics.forEach(topic => {
 
 const allTags = mdArray.flatMap(file => file.tags);
 const uniqueTags = [... new Set(allTags)].sort()
-
 
 app.set('view engine', 'ejs')
 
