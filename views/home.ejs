@@ -1,7 +1,17 @@
 <%- include('partials/header', {title: 'Home Page'}) %>
 
+<div style="display: inline-block;"> 
 <h1>Welcome to The Site</h1>
 <p> The main goal of this site is to teach different cs topics at a undergraduate/graduate level.</p>
 <p> There are not many youtube videos with good deep-dives, which is baffling considering its not all difficult</p>
 <p> I hope to make some blogs that can help people (not necessarily only academics) to learn the beauty of it all</p>
+</div>
+
+<div style="display: inline-block; position: fixed; top: 0; right: 0; border: 1px solid grey">
+    <h5> new changes made! <%= date %></h1>
+    <% changes.forEach(change => { %>
+        <h6 style="margin: 0%;"><%= change.stated %> <a href="<%= change.url %>"><%= change.title %></a> <br></h6>
+    <% }) %>
+</div>
+
 <%- include('partials/footer') %>

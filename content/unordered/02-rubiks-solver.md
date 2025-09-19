@@ -7,9 +7,22 @@ tags: ['cs', 'math', 'project', 'state-space', 'ai', 'python']
 
 ## rubiks cube representation
 
-in this blog you are going to see both a `cube` object, and the `apply_move, check_solved` functions, 
-lets try to implement them.
+to apply moves easily and to count the many possible rubiks cube states, we want to inject the cube to the naturals, meaning we want to find an encoding.
 
+### corner orientation coordinate 
+
+
+### edge orientation coordinate 
+
+
+### corner permutation coordinate 
+
+
+### edge permutation coordinate 
+
+
+all the legal rubiks cube position are defined as those with coordinates in $\{ (x_1,x_2,x_3,x_4)\space | \space 0<=x_1<3^7,\space 0<=x_2<2^{11},\space 0<=x_3<8!,\space 0<=x_4<12! \}$
+thus the number of possible cubes is exactly the set's cardinality which is <br> $\frac{3^7*2^{11}*8!*12!}{2}= 43,252,003,274,489,856,000$
 
 
 ## the group of rubiks cubes
@@ -20,7 +33,7 @@ a group is the ordered pair $(G, \cdot_{G})$, a set $G$ with an action $\cdot_{G
 3. inverse: $\forall a \in G, \exists a' \in G$ such that $a \cdot_{G} a' = a' \cdot_{G} a = e$ 
 
 
-a rubiks cube's state is defined by a sequence of moves it takes to achieve it. the cubes $"R"$ and $"U2\space U2 \space R"$ are the same one. we can define multiplication between $2$ rubiks cubes is defined as applying the first's moves and then the second's. For example $"R"\cdot "R2"="R\space \space R2"="R'"$.
+a rubiks cube's state is defined by a sequence of moves it takes to achieve it. the cubes $"R"$ and $"U2\space U2 \space R"$ are the same one. multiplication between $2$ rubiks cubes is defined as applying the first's moves and then the second's. For example $"R"\cdot "R2"="R\space \space R2"="R'"$.
 
 the set of all rubik's cube states $G_0$ with the action of multiplication is a group. 
 that's because it satisfies all of the group axioms;
@@ -36,7 +49,7 @@ notice that the cube $"U'"$ is in $G_1$ because $"U'"="U \space U \space U"$
 even though $G_1$ looks complicated it really only represents
 all the cube states where the top and bottom faces contain only white or yellow colors.
 
-## a brute-force search
+## a brute-force search and bfs
 
 for some context, what we want to develop is an algorithm that comes up with a solution for a given rubiks cube.
 a solution is a string $s$ of moves to be applied to the cube such that we get the identity.
@@ -72,7 +85,7 @@ this implementation has two problems. <br>
 for `randomized` to output the optimal solution, it would need to guess all the moves correctly.
 meaning that it would be correct with probability $\frac{1}{6^k}$, why?
 because for each steps there are $6$ possible guesses and each one generates a new branch.
-for a "good" random scramble of a cube, the optimal solution is of length $18$ on average.
+for a "good" random scramble of a cube, an optimal solution is of length $18$ on average.
 meaning that this algorithm, assuming that the random distribution is perfectly uniform (which it isn't)
 would give an optimal solution with probability $9.846e-15$.
 
@@ -119,11 +132,14 @@ what that guarantees us is two things,
 1. an optimal solution, if we haven't found a solution at depth $k-1$ and we went through all smaller depths.
 and went through all the states at depth $k-1$, then if we found a solution at depth $k$ that must be an optimal solution.
 
-2. the program will eventually stop, it was proved that every rubiks cube has a solution of length $20$.$^1$
+2. the program will eventually stop, it was proved that every rubiks cube has a solution of length at most $20$.$^1$
 meaning that if we search until a depth of $20$, the program will stop.
 
+++
+/\ change from 18 to max state count
 thats nice but we still have one lingering problem. which is runtime, 
-we based our strategy upon searching until depth $20$, but because there are $6$ possible moves each time, that amounts to $1+6+6^2+6^3+...+6^{20} = \frac{6^{21}-1}{6-1} \approx 6^{20} \approx 3.656e+15$
+we based our strategy upon searching until depth $20$, but because there are $18$ possible moves each time, that amounts to $1+18+18^2+18^3+...+18^{20} = \frac{18^{21}-1}{18-1} \approx 18^{20} \approx 1.2748e+25$
+++
 
 meaning that even if it took as $1$ millisecond to process a state,
 it would still take us approximately $115930$ years to find an optimal solution.
@@ -135,6 +151,7 @@ we will now switch to heuristics, and precomputed tables.
 
 
 ## the layout of the algorithm
+
 
 
 ### phase 1 
