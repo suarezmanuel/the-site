@@ -47,7 +47,7 @@ exec(gitCommand, (error, stdout, stderr) => {
         })
     })
 
-    recentChangesCache = allChanges.slice(0, 5);
+    recentChangesCache = allChanges;
     // console.log("changes made:", recentChangesCache)
 })
 

@@ -1,0 +1,33 @@
+{
+  "name": "the-site",
+  "version": "1.0.0",
+  "description": "<img width=\"732\" height=\"296\" alt=\"image\" src=\"https://github.com/user-attachments/assets/fb465040-f26f-45ec-9cb7-9a36223bcb0d\" />",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suarezmanuel/the-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/suarezmanuel/the-site/issues"
+  },
+  "homepage": "https://github.com/suarezmanuel/the-site#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "gray-matter": "^4.0.3",
+    "marked": "^16.3.0",
+    "marked-katex-extension": "^5.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
