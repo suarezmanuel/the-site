@@ -2,12 +2,13 @@ const express = require('express');
 const path = require('path')
 const fs = require('fs')
 const { marked } = require('marked')
+
 const markedKatex = require('marked-katex-extension')
 const matter = require('gray-matter')
 const { exec } = require('child_process');
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const mdArray = []
 
 app.use(express.static(path.join(__dirname, 'content')))

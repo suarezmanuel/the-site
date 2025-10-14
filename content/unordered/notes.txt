@@ -1,0 +1,7 @@
+semantics
+- use `bold` only when introducing new terms
+
+
+ideas
+- why does q = [q[i+1] for i in range(0, len(q)-1)] actually compile and work?
+- why does a,b = b,a work
