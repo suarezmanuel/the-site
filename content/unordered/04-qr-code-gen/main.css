@@ -14,19 +14,15 @@ body {
     gap: 30px;
     align-items: flex-start;
 }
-#controls {
-    padding: 20px;
-    background-color: #444;
-    border-radius: 8px;
-    width: 250px;
+#canvases-container {
+    display:flex;
+    flex-direction: column;
 }
+
+#canvases-container > * {
+    padding: 10px;
+}
+
 h1, h2, p {
     margin: 0 0 15px 0;
-}
-canvas {
-    border: 2px solid #555;
-    background-color: #707070;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
 }
