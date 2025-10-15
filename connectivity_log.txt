@@ -1,0 +1,13 @@
+sudo rm -rf /usr/local/bin/node
+
+sudo rm -rf /usr/local/bin/npm
+sudo rm -rf /usr/local/bin/npx # Also usually installed with node
+sudo rm -rf /usr/local/lib/node_modules
+
+sudo rm -rf /usr/local/share/man/man1/node.1
+sudo rm -rf /usr/local/share/systemd/node.service # Less common on macOS, but worth checking
+sudo rm -rf /usr/local/share/doc/node
+sudo rm -rf /usr/local/lib/dtrace/node.d
+
+rm -rf ~/.npm
+rm -rf ~/.node-gyp
