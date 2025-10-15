@@ -21,27 +21,7 @@ def eval_cnf(cnf, assignment):
 
 
 
-# assignment = {}
-# def solve_backtracking(cnf, i):
-#     # print(cnf, i)
-#     for val in (False, True):
-#         assignment[i] = val
-
-#         st = eval_cnf(cnf, assignment)
-
-#         if st is True:
-#             return True
-#         if st is False:
-#             del assignment[i]
-#             continue
-
-#         backtrack = solve_backtracking(cnf, i+1)
-#         if backtrack:
-#             return True
-#         del assignment[i]
-#     return False
-
-def unit_propagate(cnf, assignment):
+def unit_propagate(cnf, assignment, fd):
     changed = True
     while changed:
         changed = False
@@ -64,9 +44,13 @@ def unit_propagate(cnf, assignment):
                 val = undef_lit > 0
                 assignment[v] = val
                 changed = True
+
+                # log decision
+                fd.write(f"Unit propagate: {undef_lit}\n")
+
     return assignment
 
-def pure_literal_assign(cnf, assignment):
+def pure_literal_assign(cnf, assignment, fd):
     counts = {}
     for clause in cnf:
         if eval_clause(clause, assignment):
@@ -80,17 +64,21 @@ def pure_literal_assign(cnf, assignment):
     for v, mask in counts.items():
         if mask == 1:
             assignment[v] = True
+            # log decision
+            fd.write(f"Pure literal assign: {v}\n")
         elif mask == 2:
             assignment[v] = False
+            # log decision
+            fd.write(f"Pure literal assign: {-v}\n")
     return assignment
 
-def solve(cnf):
+def solve(cnf, fd):
     vars = sorted({abs(l) for c in cnf for l in c})
 
     def recurse(assignment):
-        assignment = unit_propagate(cnf, assignment.copy())
+        assignment = unit_propagate(cnf, assignment.copy(), fd)
 
-        assignment = pure_literal_assign(cnf, assignment.copy())
+        assignment = pure_literal_assign(cnf, assignment.copy(), fd)
         
         st = eval_cnf(cnf, assignment)
         if st is True:
@@ -100,11 +88,18 @@ def solve(cnf):
         
         unassigned = next(v for v in vars if v not in assignment)
         for val in (True, False):
+
+            # record guess
+            fd.write(f"Guess: {unassigned if val else -unassigned}\n")
+
             assignment[unassigned] = val
             res = recurse(assignment)
             if res is not None:
                 return res
             del assignment[unassigned]
+        
+        # record backtrack
+        fd.write(f"Backtrack\n")
         return None
 
     return recurse({})
