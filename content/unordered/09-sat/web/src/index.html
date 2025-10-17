@@ -14,45 +14,63 @@
             <button id="input-button">calculate</button>
             <canvas style="height:200px" id="input-visuals"></canvas>
             <pre>
-                for logic symbols press the following, where S means shift:
-                ¬: S+1, ∧: S+2, ∨: S+3, →: S+4, ↔: S+5, ⊕: S+6, ⊙: S+-,⊼: S+7, ⊽: S+8
-                symbol names from left to right: 
-                negation, conjunction (AND), disjunction (OR), implication, biconditional (iff), exclusive or (XOR), not xor (XNOR), not and (NAND), not or (NOR)
 
-                XNOR has a weird keybind because 
-                1. it doesnt fit in 1-8 in the keyboard
-                2. its equivalent to iff by definition, so you should use ↔ instead of ⊙, but they work the same regardless.
+                INSTRUCTIONS =============================================================================================================================================++
+                ||                                                                                                                                                        ||
+                ||   for logic symbols press the following, where S means shift:                                                                                          ||
+                ||   ¬: S+1, ∧: S+2, ∨: S+3, →: S+4, ↔: S+5, ⊕: S+6, ⊙: S+-,⊼: S+7, ⊽: S+8                                                                                ||
+                ||   symbol names from left to right:                                                                                                                     ||
+                ||   negation, conjunction (AND), disjunction (OR), implication, biconditional (iff), exclusive or (XOR), not xor (XNOR), not and (NAND), not or (NOR)    || 
+                ||                                                                                                                                                        ||
+                ||   XNOR has a weird keybind because                                                                                                                     ||
+                ||   1. it doesnt fit in 1-8 in the keyboard                                                                                                              ||
+                ||   2. its equivalent to iff by definition, so you should use ↔ instead of ⊙, but they work the same regardless.                                         ||
+                ||                                                                                                                                                        ||
+                ||   use integer numbers, or names for variables, e.g. hello_my_name_is, 123, 93012, bonjour                                                              ||
+                ||   minus can't be used, use ¬ if you want to negate variables.                                                                                          ||
+                ||                                                                                                                                                        ||
+                ||   DONT USE THESE CHARACTERS: -  /  %  ^  !  &  |  =  +                                                                                                 ||
+                ||                                                                                                                                                        ||
+                ++========================================================================================================================================================++
 
-                use integer numbers, or names for variables, e.g. hello_my_name_is, 123, 93012, bonjour
-                minus can't be used, use ¬ if you want to negate variables.
+                BACKGROUND =========================================================================================================================================================================================++
+                ||                                                                                                                                                                                                  ||
+                ||   what this magic input box and button do, is calculate if a given logic formula (e.g. ((p∨q)∧r)→(¬s)) is satisfiable (long for SAT),                                                            ||
+                ||   meaning that there is a setting that leads to the formula being true, the formula ((p∨q)∧r)→(¬s) is SAT because p=T, q=T, r=T, s=F makes the formula true.                                     ||
+                ||   for a general formula (x1 op1 x2 op3 x3 op3 ,... opn-1 xn) this problem could be solved by trying all possible values for the xn's,                                                            ||
+                ||   leading to a runtime of atleast O(2^n) (exponential) which is considered very bad in computer programming, because most computers wouldn't be able to check for SAT                            ||
+                ||   if there are n=100 operands.                                                                                                                                                                   ||
+                ||   this is the infamous SAT problem,                                                                                                                                                              ||
+                ||   more specifically, the SAT problem is for checking whether a formula in conjuctive normal form (cnf), (x1 or x2 or x3 ... or xn) and (xn+1 or xn+2 ...) and ... and (xk+1 or xk+2 ... or xm)   ||
+                ||   is satisfiable. and the interesting thing is that there is no known algorithm that runs in polynomial time for all inputs, and checks whether a formula in cnf is satisfiable.                 ||
+                ||   even so, we can make some optimizations and heuristics to solve the SAT problem maybe not in O(2^n) but in O(2^n/100000) (made up number) in the average case.                                 ||
+                ||   lastly, to transform a given logic formula (e.g. ((p∨q)∧r)→(¬s)) into cnf, the tseitin transformation is used, which separates the logic formula                                               ||
+                ||   into its operators p∨q, (p∨q)∧r, ¬s, ((p∨q)∧r)→(¬s), and assigns each a variable, 1 ↔ p∨q, 2 ↔ (p∨q)∧r, 3 ↔ ¬s, 4 ↔ ((p∨q)∧r)→(¬s)                                                             ||
+                ||   and then makes use of the logic truth tables, and the fact that `A ↔ B`, `(A ∨ ¬B) ∧ (¬A ∨ B)` are equivalent                                                                                  ||
+                ||   and then we infer in the general case that for:                                                                                                                                                ||
+                ||   a ↔ ¬b,  (¬b ∨ ¬a) ∧ (b ∨ a)                                                                                                                                                                   ||
+                ||   a ↔ b∧c, (b ∨ ¬a) ∧ (c ∨ ¬a) ∧ (¬b ∨ ¬c ∨ a)                                                                                                                                                   ||
+                ||   a ↔ b∨c, (¬b ∨ a) ∧ (¬c ∨ a) ∧ (b ∨ c ∨ ¬a)                                                                                                                                                    ||
+                ||   a ↔ b→c, (¬a ∨ ¬b ∨ c) ∧ (b ∨ a) ∧ (¬c ∨ a)                                                                                                                                                    ||
+                ||                                                                                                                                                                                                  ||
+                ||   then we get for each 1 ↔ p∨q, 2 ↔ (p∨q)∧r, 3 ↔ ¬s, 4 ↔ ((p∨q)∧r)→(¬s),                                                                                                                         ||
+                ||   1 ↔ p∨q            : (¬p ∨ 1) ∧ (¬q ∨ 1) ∧ (p ∨ q ∨ ¬1)                                                                                                                                        ||
+                ||   2 ↔ (p∨q)∧r : 1∧r  : (2 ∨ ¬1) ∧ (¬r ∨ 2) ∧ (1 ∨ r ∨ ¬2)                                                                                                                                        ||
+                ||   3 ↔ ¬s             : (¬s ∨ ¬3) ∧ (s ∨ 3)                                                                                                                                                       ||
+                ||   4 ↔ ((p∨q)∧r)→(¬s) : 2→3 : (¬4 ∨ ¬2 ∨ 3) ∧ (2 ∨ 4) ∨ (¬3 ∨ 4)                                                                                                                                  ||
+                ||                                                                                                                                                                                                  ||
+                ||   finally, we got that the formula ((p∨q)∧r)→(¬s) is biconditional to                                                                                                                            ||
+                ||   (¬p ∨ 1) ∧ (¬q ∨ 1) ∧ (p ∨ q ∨ ¬1) ∧ (2 ∨ ¬1) ∧ (¬r ∨ 2) ∧ (1 ∨ r ∨ ¬2) ∧ (¬s ∨ ¬3) ∧ (s ∨ 3) ∧ (¬4 ∨ ¬2 ∨ 3) ∧ (2 ∨ 4) ∨ (¬3 ∨ 4)                                                             ||
+                ||   which is in cnf. and a nice thing about this transformation, is that the resulting formula is linearly bigger than the original one (i think 5 times bigger at most).                          ||
+                ||                                                                                                                                                                                                  ||
+                ||                                                                                                                                                                                                  ||
+                ||   we implemented a <b>SAT solver</b> which uses the <b>cdcl</b> algorithm and some heuristics, to solve generic logic formulas.                                                                                ||
+                ||   we also compared the performance of the naive algorithm, dpll, and cdcl.                                                                                                                       ||
+                ||                                                                                                                                                                                                  ||
+                ||   if you liked this resource, consider clapping your hands, or going for a run, or maybe eating something tasty, or something                                                                    ||
+                ||                                                                                                                                                                                                  ||
+                ++==================================================================================================================================================================================================++
 
-                DONT USE THESE CHARACTERS: -  /  %  ^  !  &  |  =  +
-
-                some transformations of operands to SAT form, using the tseitin transformation.
-
-                A iff B
-                (A or neg(B)) and (neg(A) or B)
-
-                B iff neg(A) 
-                (B or A) and (neg(B) or neg(A))
-
-                C iff (A and B)
-                (C or neg(A and B)) and (neg(C) or (A and B))
-                (C or neg(A) or neg(B)) and ((neg(C) or A) and (neg(C) or B))
-                (C or neg(A) or neg(B)) and (neg(C) or A) and (neg(C) or B)
-
-                C iff (A or B)
-                (C or neg(A or B)) and (neg(C) or (A or B))
-                (C or (neg(A) and neg(B))) and (neg(C) or A or B)
-                (C or neg(A)) and (C or neg(B)) and (neg(C) or A or B)
-
-                C iff (A xor B)
-                C iff ((A and neg(B)) or (neg(A) and B))
-                (C or neg((A and neg(B)) or (neg(A) and B))) and (neg(C) or ((A and neg(B)) or (neg(A) and B)))
-                ((C or neg(A) or B) and (A or neg(B))) and (neg(C) or (((A and neg(B)) or neg(A)) and ((A and neg(B)) or B)))
-                (((B or C) and A) or (((C or neg(A)) and neg(B)))) and (neg(C) or ((neg(B) or neg(A)) and (A or B)))
-                (((B and A) or (C and A)) or (((C and neg(B)) or (neg(A) and neg(B))))) and (neg(C) or ((neg(B) or neg(A)) and (A or B)))
-                ... wtf
             </pre>
         </div>
 
